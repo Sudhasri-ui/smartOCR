@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reports</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fa;
+}
+
+header {
+    background: #fff;
+    padding: 16px 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.nav {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.nav a {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nav a:hover {
+    color: #0d6efd;
+}
+
+.user-info {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 32px auto;
+    padding: 0 32px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.page-subtitle {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 32px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 6px;
+}
+
+.filter-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #0d6efd;
+    color: white;
+}
+
+.btn-secondary {
+    background: #fff;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.results-header {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    background: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    border-bottom: 2px solid #dee2e6;
+}
+
+tbody td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+}
+
+tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-saved {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-draft {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.btn-view {
+    background: transparent;
+    color: #0d6efd;
+    padding: 6px 12px;
+    border: 1px solid #0d6efd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-view:hover {
+    background: #0d6efd;
+    color: white;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">ADC</div>
+    <div class="nav">
+        <a href="/dashboard">📤 Upload & Parse</a>
+        <a href="/reports">📊 Reports</a>
+        <a href="#">👤 Admin</a>
+        <span class="user-info">{{ current_user }}</span>
+        <a href="/logout">🚪 Logout</a>
+    </div>
+</header>
+
+<div class="container">
+    <h1 class="page-title">Meter Reading Reports</h1>
+    <p class="page-subtitle">View and search meter reading sheets</p>
+
+    <div class="card">
+        <div class="search-header">
+            🔍 Search Filters
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>📅 From Date</label>
+                <input type="date" id="fromDate">
+            </div>
+            <div class="filter-group">
+                <label>📅 To Date</label>
+                <input type="date" id="toDate">
+            </div>
+            <div class="filter-group">
+                <label>📍 Route/Zone</label>
+                <input type="text" placeholder="Enter route/zone">
+            </div>
+            <div class="filter-group">
+                <label>👤 Technician Name</label>
+                <input type="text" placeholder="Enter technician name">
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="btn btn-primary">🔍 Search</button>
+            <button class="btn btn-secondary">✖ Clear</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="results-header">Results ({{ readings|length }})</h2>
+
+        {% if readings %}
+        <table>
+            <thead>
+                <tr>
+                    <th>DATE</th>
+                    <th>ROUTE/ZONE</th>
+                    <th>TECHNICIAN</th>
+                    <th>TOTAL ASSIGNED</th>
+                    <th>METERS READ</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reading in readings %}
+                <tr>
+                    <td>{{ reading.date or 'N/A' }}</td>
+                    <td>{{ reading.route_zone or 'N/A' }}</td>
+                    <td>{{ reading.technician_name or 'N/A' }}</td>
+                    <td>{{ reading.total_assigned or 'N/A' }}</td>
+                    <td>{{ reading.meters_read or 'N/A' }}</td>
+                    <td>
+                        <span class="status status-saved">SAVED</span>
+                    </td>
+                    <td>
+                        <button class="btn-view" onclick="viewReport({{ reading.id }})">View</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align:center;padding:40px;color:#6c757d;">No reports found</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function viewReport(id) {
+    window.location.href = `/report/${id}`;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+/* material.css - simple Material-like theme */
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --primary:#1e88e5;
+  --accent:#00bfa5;
+  --muted:#6c757d;
+  --radius:12px;
+  --shadow: 0 6px 18px rgba(35,40,50,0.08);
+}
+
+*{box-sizing:border-box;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif}
+body{margin:0;background:var(--bg);color:#222;padding:24px}
+
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;padding:12px 20px;margin-bottom:14px;
+}
+.brand-left h2{margin:0}
+.brand-left .muted{color:var(--muted);font-size:12px}
+.container{display:flex;gap:18px;align-items:flex-start;max-width:1100px;margin:18px auto}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.auth-card{width:420px;padding:28px}
+.info-card{flex:1;padding:22px}
+.brand{margin:0 0 8px 0;font-size:20px}
+.subtitle{margin:0 0 16px;color:var(--muted)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+.field input{width:100%;padding:10px;border:1px solid #e6edf5;border-radius:8px;font-size:14px}
+
+.btn{background:#fff;border:1px solid #e1e7ef;padding:8px 12px;border-radius:8px;cursor:pointer}
+.btn.primary{background:var(--primary);color:#fff;border:none;box-shadow:0 6px 18px rgba(30,136,229,0.18)}
+.btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06)}
+.btn.outline{background:transparent;border:1px solid rgba(0,0,0,0.06)}
+.btn:active{transform:translateY(1px)}
+
+.link{color:var(--primary);text-decoration:none;font-size:14px}
+.small{font-size:12px;color:var(--muted)}
+
+.main-grid{display:grid;grid-template-columns:260px 1fr;gap:18px;max-width:1200px;margin:0 auto}
+.sidebar{min-height:200px}
+.work-area{min-height:480px}
+.page-wrap{position:relative;display:inline-block;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
+.page-img{display:block;max-width:100%;height:auto;display:block}
+.word{position:absolute;white-space:pre;padding:0;margin:0;outline:none;background:rgba(255,255,255,0.0)}
+.box{border:1px dashed rgba(0,0,0,0.06)}

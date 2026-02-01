@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Extractor</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .pdf-container { margin-bottom: 20px; }
+        .parse-btn { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        .parse-btn:hover { background-color: #45a049; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>Uploaded PDF</h2>
+
+    {% if pdf_url %}
+    <div class="pdf-container">
+        <iframe src="{{ pdf_url }}" width="100%" height="500px"></iframe>
+    </div>
+
+    <form action="/parse" method="post">
+        <button type="submit" class="parse-btn">Parse Sheet</button>
+    </form>
+    {% else %}
+    <p>No PDF uploaded yet.</p>
+    {% endif %}
+
+    {% if sheet_info %}
+    <h3>Sheet Information</h3>
+    <table>
+        {% for key, value in sheet_info.items() %}
+        <tr>
+            <th>{{ key }}</th>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if table %}
+    <h3>Extracted Table</h3>
+    <table>
+        {% for row in table %}
+        <tr>
+            {% for col in row %}
+            <td>{{ col }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</body>
+</html>

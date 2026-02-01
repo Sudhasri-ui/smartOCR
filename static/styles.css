@@ -1,0 +1,224 @@
+/* GLOBAL */
+body {
+    margin: 0;
+    padding: 0;
+    background: #eaf4fb;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* CENTER PAGE FOR LOGIN/REGISTER/FORGOT */
+.page-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* AUTH CARD */
+.auth-card {
+    width: 380px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.1);
+}
+
+/* INPUT FIELDS */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #bcd5e6;
+    border-radius: 8px;
+    outline: none;
+}
+
+/* BUTTONS */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #66aee8;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #4997d3;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #66aee8;
+    padding: 15px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* CARD (Standard white box) */
+.card {
+    width: 80%;
+    background: white;
+    padding: 25px;
+    margin: 20px auto;
+    border-radius: 15px;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.08);
+}
+
+/* SECTION TITLE */
+.section-title {
+    font-size: 22px;
+    color: #225d8f;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/******************************************
+   UPLOAD CARD (Exact screenshot style)
+******************************************/
+
+.upload-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-top: 30px;
+    width: 92%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.upload-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.upload-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Choose File Button */
+.choose-btn {
+    background: #e5e7eb;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+}
+
+.choose-btn:hover {
+    background: #dce0e6;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Display Selected File Name */
+.file-name {
+    margin-left: 5px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Upload Button */
+.upload-submit {
+    width: 100%;
+    padding: 12px;
+    background: #1e40af;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.upload-submit:hover {
+    background: #1c3a99;
+}
+
+/* Uploading Bar */
+.upload-progress {
+    margin-top: 15px;
+}
+
+.progress-bar {
+    width: 100%;
+    background: #e5e7eb;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.spinner {
+    font-size: 14px;
+    color: #dc2626;
+}
+
+/******************************************
+   EXTRACTED TABLE
+******************************************/
+
+.extracted-table {
+    width: 90%;
+    margin-top: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.extracted-table h3 {
+    margin-bottom: 15px;
+    color: #1f2937;
+}
+
+.extracted-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.extracted-table th {
+    background: #1f6feb;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+.extracted-table td {
+    padding: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/******************************************
+   SUMMARY BOX
+******************************************/
+
+.summary-box {
+    width: 90%;
+    margin-top: 25px;
+    background: #e0f2fe;
+    padding: 20px;
+    border-radius: 12px;
+    color: #1f2937;
+}
+
+.summary-box h3 {
+    margin-bottom: 10px;
+}
+
+.summary-box p {
+    margin: 6px 0;
+}

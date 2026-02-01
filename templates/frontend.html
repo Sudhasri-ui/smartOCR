@@ -1,0 +1,206 @@
+<!-- static/frontend.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>OCR + LLM Agent — All-in-one</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 16px; }
+    .toolbar { margin-bottom: 12px; }
+    .page-wrap { position: relative; display:inline-block; border:1px solid #ddd; }
+    .page-img { display:block; max-width:95vw; height:auto; }
+    .word { position: absolute; white-space: pre; padding:0; margin:0; outline:none; background: rgba(255,255,255,0.0); }
+    .box { border:1px dashed rgba(0,0,0,0.06); }
+    button { margin-right:8px; }
+    #video { border:1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h2>OCR + LLM Agent — Upload / Browser Camera / Backend Camera</h2>
+
+  <div class="toolbar">
+    <input id="fileInput" type="file" accept="image/*,.pdf,.mp4">
+    <button id="uploadBtn">Upload & OCR</button>
+
+    <button id="openCamBtn">Open Browser Camera</button>
+    <button id="captureCamBtn" disabled>Capture from Browser Camera</button>
+    <button id="stopCamBtn" disabled>Stop Browser Camera</button>
+
+    <button id="backendCamBtn">Capture from Server Camera</button>
+
+    <select id="langSelect">
+      <option value="eng">English (eng)</option>
+      <!-- Add more languages if installed in Tesseract -->
+    </select>
+
+    <button id="autoCleanGlobal">Auto Clean (LLM)</button>
+  </div>
+
+  <div id="videoContainer" style="margin-bottom:12px;">
+    <video id="video" width="480" height="360" autoplay style="display:none"></video>
+  </div>
+
+  <div id="result"></div>
+
+<script>
+const API = ""; // empty means same origin (served by FastAPI). If using different host set like "http://127.0.0.1:8000"
+
+function apiUrl(path) {
+  return (API || "") + path;
+}
+
+document.getElementById('uploadBtn').onclick = async () => {
+  const f = document.getElementById('fileInput').files[0];
+  if (!f) { alert('Choose a file'); return; }
+  const fd = new FormData();
+  fd.append('file', f);
+  fd.append('lang', document.getElementById('langSelect').value);
+  const resp = await fetch(apiUrl('/process'), { method: 'POST', body: fd });
+  const data = await resp.json();
+  if (!data.ok) { alert("Error: " + (data.error||'')); return; }
+  renderPage(data);
+};
+
+let stream = null;
+const video = document.getElementById('video');
+document.getElementById('openCamBtn').onclick = async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    video.srcObject = stream;
+    video.style.display = 'block';
+    document.getElementById('captureCamBtn').disabled = false;
+    document.getElementById('stopCamBtn').disabled = false;
+  } catch (e) {
+    alert('Could not open camera: ' + e);
+  }
+};
+document.getElementById('stopCamBtn').onclick = () => {
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+    video.style.display = 'none';
+    document.getElementById('captureCamBtn').disabled = true;
+    document.getElementById('stopCamBtn').disabled = true;
+  }
+};
+document.getElementById('captureCamBtn').onclick = async () => {
+  if (!stream) { alert('Camera not open'); return; }
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  canvas.toBlob(async (blob) => {
+    const f = new File([blob], "capture.png", { type: "image/png" });
+    const fd = new FormData();
+    fd.append('file', f);
+    fd.append('lang', document.getElementById('langSelect').value);
+    const resp = await fetch(apiUrl('/process'), { method: 'POST', body: fd });
+    const data = await resp.json();
+    if (!data.ok) { alert("Error: " + (data.error||'')); return; }
+    renderPage(data);
+  }, 'image/png');
+};
+
+document.getElementById('backendCamBtn').onclick = async () => {
+  const fd = new FormData();
+  fd.append('frame_id', '0'); // camera index 0
+  fd.append('lang', document.getElementById('langSelect').value);
+  const resp = await fetch(apiUrl('/camera_capture'), { method: 'POST', body: fd });
+  const data = await resp.json();
+  if (!data.ok) { alert("Error: " + (data.error||'')); return; }
+  renderPage(data);
+};
+
+function renderPage(data) {
+  const container = document.getElementById('result');
+  container.innerHTML = '';
+  const img = new Image();
+  img.src = 'data:image/png;base64,' + data.image_b64;
+  img.className = 'page-img';
+  img.onload = () => {
+    const wrap = document.createElement('div');
+    wrap.className = 'page-wrap';
+    wrap.style.width = img.width + 'px';
+    wrap.style.height = img.height + 'px';
+    wrap.appendChild(img);
+
+    (data.words || []).forEach(w => {
+      const el = document.createElement('div');
+      el.className = 'word box';
+      el.contentEditable = 'true';
+      el.innerText = w.text;
+      el.style.left = w.left + 'px';
+      el.style.top = w.top + 'px';
+      el.style.width = Math.max(10, w.width) + 'px';
+      el.style.height = Math.max(10, w.height) + 'px';
+      el.style.fontSize = Math.max(10, Math.round(w.height * 0.9)) + 'px';
+      el.style.lineHeight = el.style.height;
+      wrap.appendChild(el);
+    });
+
+    const tools = document.createElement('div');
+    tools.style.marginTop = '8px';
+
+    const saveTxtBtn = document.createElement('button');
+    saveTxtBtn.innerText = 'Save as TXT';
+    saveTxtBtn.onclick = saveTxt;
+    tools.appendChild(saveTxtBtn);
+
+    const saveDocxBtn = document.createElement('button');
+    saveDocxBtn.innerText = 'Save as DOCX';
+    saveDocxBtn.onclick = saveDocx;
+    tools.appendChild(saveDocxBtn);
+
+    const autoCleanBtn = document.createElement('button');
+    autoCleanBtn.innerText = 'Auto Clean (LLM)';
+    autoCleanBtn.onclick = autoClean;
+    tools.appendChild(autoCleanBtn);
+
+    container.appendChild(wrap);
+    container.appendChild(tools);
+  };
+}
+
+function collectEditedPlain() {
+  const words = Array.from(document.querySelectorAll('.word')).map(el => el.innerText.trim());
+  return words.join(' ');
+}
+
+async function saveTxt() {
+  const txt = collectEditedPlain();
+  const fd = new FormData();
+  fd.append('text', txt);
+  fd.append('out_name', 'extracted.txt');
+  const resp = await fetch(apiUrl('/save_txt'), { method: 'POST', body: fd });
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'extracted.txt'; a.click();
+}
+
+async function saveDocx() {
+  const txt = collectEditedPlain();
+  const fd = new FormData();
+  fd.append('text', txt);
+  fd.append('out_name', 'extracted.docx');
+  const resp = await fetch(apiUrl('/save_docx'), { method: 'POST', body: fd });
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'extracted.docx'; a.click();
+}
+
+async function autoClean() {
+  const txt = collectEditedPlain();
+  const fd = new FormData();
+  fd.append('text', txt);
+  const resp = await fetch(apiUrl('/clean'), { method: 'POST', body: fd });
+  const j = await resp.json();
+  if (!j.ok) { alert('Clean failed: ' + (j.error || '')); return; }
+  const first = document.querySelector('.word');
+  if (first) first.innerText = j.cleaned_text;
+  alert('LLM cleaned text inserted into first block.');
+}
+
+</script>
+</body>
+</html>

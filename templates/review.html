@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Review Sheet</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
+header { background: #fff; padding: 16px 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 24px; font-weight: 700; color: #0d6efd; }
+.nav { display: flex; gap: 24px; align-items: center; }
+.nav a { color: #6c757d; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; }
+.nav a:hover { color: #0d6efd; }
+.container-full { padding: 20px; height: calc(100vh - 70px); }
+.pdf-card-full { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); height: 100%; display: flex; flex-direction: column; }
+.container-split { display: flex; gap: 20px; padding: 20px; height: calc(100vh - 70px); }
+.card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.left { width: 50%; }
+.right { width: 50%; overflow: auto; }
+iframe { width: 100%; flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; margin: 12px 0; }
+button { width: 100%; padding: 14px; background: #0d6efd; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; }
+button:hover { background: #0b5ed7; }
+button:disabled { opacity: 0.7; cursor: not-allowed; }
+.btn-save { background: #198754; }
+.btn-save:hover { background: #157347; }
+.tabs { display: flex; gap: 24px; border-bottom: 2px solid #e9ecef; margin-bottom: 20px; }
+.tab { padding: 12px 4px; cursor: pointer; font-weight: 600; color: #6c757d; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #0d6efd; border-bottom-color: #0d6efd; }
+.section { margin-bottom: 24px; }
+.section h3 { font-size: 16px; margin-bottom: 16px; color: #1a1a1a; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+label { font-size: 13px; color: #6c757d; font-weight: 500; display: block; margin-bottom: 6px; }
+input, textarea { width: 100%; padding: 10px 12px; border: 1px solid #dee2e6; border-radius: 6px; font-size: 14px; }
+textarea { resize: vertical; min-height: 80px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: #f8f9fa; padding: 12px 8px; text-align: left; font-weight: 600; color: #495057; border-bottom: 2px solid #dee2e6; }
+td { padding: 10px 8px; border-bottom: 1px solid #e9ecef; }
+tr:hover { background: #f8f9fa; }
+.hidden { display: none; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">ADC</div>
+    <div class="nav">
+        <a href="/dashboard">📤 Upload & Parse</a>
+        <a href="/reports">📊 Reports</a>
+        <a href="/admin">👤 Admin</a>
+        <span style="color:#6c757d;">{{ current_user }}</span>
+        <a href="/logout">🚪 Logout</a>
+    </div>
+</header>
+
+<!-- FULL WIDTH PDF VIEW (Initial) -->
+<div id="fullView" class="container-full">
+    <div class="pdf-card-full">
+        <h3>PDF Preview</h3>
+        <iframe src="{{ pdf_url }}"></iframe>
+        <button id="parseBtn" onclick="parseSheet()">Parse Sheet</button>
+    </div>
+</div>
+
+<!-- SPLIT VIEW (After Parse) -->
+<div id="splitView" class="container-split hidden">
+<div class="left card">
+    <h3 style="margin-bottom:12px;">PDF Preview</h3>
+    <iframe src="{{ pdf_url }}" style="height:calc(100% - 40px);"></iframe>
+</div>
+<div class="right card">
+    <h3 style="margin-bottom:12px;">Extracted Data</h3>
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('sheet')">Sheet Info</div>
+        <div class="tab" onclick="showTab('grid')">Property Grid (<span id="rowCount">0</span>)</div>
+    </div>
+    <div id="sheetTab">
+        <div class="section">
+            <h3>Technician Details</h3>
+            <div class="grid">
+                <div><label>Technician Name</label><input id="name"></div>
+                <div><label>Employee ID</label><input id="emp_id"></div>
+                <div><label>Date</label><input id="date"></div>
+                <div><label>Route / Zone</label><input id="zone"></div>
+                <div><label>Start Time</label><input id="start"></div>
+                <div><label>End Time</label><input id="end"></div>
+            </div>
+        </div>
+        <div class="section">
+            <h3>Summary Statistics</h3>
+            <div class="grid">
+                <div><label>Total Assigned</label><input id="total_assigned"></div>
+                <div><label>Meters Read</label><input id="meter_read"></div>
+                <div><label>No Access</label><input id="no_access"></div>
+                <div><label>Faulty Meters</label><input id="faulty_meters"></div>
+                <div><label>Reports Filed</label><input id="reports_filed"></div>
+            </div>
+        </div>
+        <div class="section">
+            <h3>Field Notes</h3>
+            <textarea id="notes"></textarea>
+        </div>
+        <button class="btn-save" onclick="saveData()">💾 Save to Database</button>
+    </div>
+    <div id="gridTab" class="hidden">
+        <table>
+            <thead>
+                <tr><th>Address</th><th>Account Holder</th><th>Meter Type</th><th>Meter #</th><th>Prev</th><th>Current</th><th>Units</th><th>Access</th><th>Photo</th></tr>
+            </thead>
+            <tbody id="gridBody"></tbody>
+        </table>
+        <button class="btn-save" onclick="saveData()" style="margin-top:20px;">💾 Save to Database</button>
+    </div>
+</div>
+</div>
+
+<script>
+function showTab(tab) {
+    document.getElementById("sheetTab").classList.add("hidden");
+    document.getElementById("gridTab").classList.add("hidden");
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    if (tab === "sheet") {
+        document.getElementById("sheetTab").classList.remove("hidden");
+        document.querySelectorAll(".tab")[0].classList.add("active");
+    } else {
+        document.getElementById("gridTab").classList.remove("hidden");
+        document.querySelectorAll(".tab")[1].classList.add("active");
+    }
+}
+
+async function parseSheet() {
+    const parseBtn = document.getElementById("parseBtn");
+    try {
+        parseBtn.disabled = true;
+        parseBtn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Loading...';
+        
+        const res = await fetch("/parse", { method: "POST" });
+        const data = await res.json();
+        
+        document.getElementById("name").value = data.technician_name || "";
+        document.getElementById("emp_id").value = data.employee_id || "";
+        document.getElementById("date").value = data.date || "";
+        document.getElementById("zone").value = data.route_zone || "";
+        document.getElementById("start").value = data.start_time || "";
+        document.getElementById("end").value = data.end_time || "";
+        document.getElementById("total_assigned").value = data.total_assigned || "";
+        document.getElementById("meter_read").value = data.meters_read || "";
+        document.getElementById("no_access").value = data.no_access || "";
+        document.getElementById("faulty_meters").value = data.faulty_meters || "";
+        document.getElementById("reports_filed").value = data.reports_filed || "";
+        document.getElementById("notes").value = data.notes || "";
+        
+        const tbody = document.getElementById("gridBody");
+        tbody.innerHTML = "";
+        if (data.property_grid && data.property_grid.length > 0) {
+            data.property_grid.forEach(row => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td contenteditable="true">${row.address || ""}</td>
+                    <td contenteditable="true">${row.account_holder || ""}</td>
+                    <td contenteditable="true">${row.meter_type || ""}</td>
+                    <td contenteditable="true">${row.meter_no || ""}</td>
+                    <td contenteditable="true">${row.previous_reading || ""}</td>
+                    <td contenteditable="true">${row.current_reading || ""}</td>
+                    <td contenteditable="true">${row.units || ""}</td>
+                    <td contenteditable="true">${row.status || ""}</td>
+                    <td contenteditable="true">${row.photo || ""}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            document.getElementById("rowCount").innerText = data.property_grid.length;
+        }
+        
+        document.getElementById("fullView").classList.add("hidden");
+        document.getElementById("splitView").classList.remove("hidden");
+        alert("✓ Data extracted successfully!");
+    } catch (error) {
+        console.error("Error:", error);
+        parseBtn.innerHTML = "⚙ Parsing...";
+        parseBtn.disabled = false;
+        alert("Error extracting data");
+    }
+}
+
+async function saveData() {
+    try {
+        const res = await fetch("/save", { method: "POST" });
+        const result = await res.json();
+        if (result.status === "success") {
+            alert("✓ Data saved to database successfully!");
+            if (confirm("View all reports?")) window.location.href = "/reports";
+        } else {
+            alert("Error: " + (result.error || "Failed to save"));
+        }
+    } catch (error) {
+        alert("Error saving data");
+    }
+}
+</script>
+</body>
+</html>

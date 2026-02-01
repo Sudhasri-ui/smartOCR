@@ -1,0 +1,25 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<h2>Extracted Table</h2>
+
+<table>
+    <tr>
+        <th>#</th>
+        <th>Description</th>
+    </tr>
+
+    {% for row in rows %}
+    <tr>
+        <td>{{ row.row }}</td>
+        <td contenteditable="true">{{ row.text }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>

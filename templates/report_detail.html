@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Report Details</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 1000px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.section {
+    margin-bottom: 32px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.info-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.stat-card-blue .stat-value { color: #0d6efd; }
+.stat-card-green .stat-value { color: #198754; }
+.stat-card-orange .stat-value { color: #fd7e14; }
+.stat-card-red .stat-value { color: #dc3545; }
+.stat-card-purple .stat-value { color: #6f42c1; }
+
+.notes-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 16px;
+    white-space: pre-wrap;
+    font-size: 14px;
+    color: #92400e;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+thead th {
+    background: #f8f9fa;
+    padding: 10px 8px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    border-bottom: 2px solid #dee2e6;
+    position: sticky;
+    top: 0;
+}
+
+tbody td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-accessible {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-dog {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.status-no-access {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.photo-check {
+    color: #198754;
+    font-size: 16px;
+}
+</style>
+</head>
+<body>
+
+<div class="modal">
+    <div class="modal-header">
+        <h2 class="modal-title">Meter Reading Sheet Details</h2>
+        <button class="btn-close" onclick="window.history.back()">×</button>
+    </div>
+
+    <div class="modal-body">
+        
+        <div class="section">
+            <div class="section-title">
+                👤 Technician Information
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Name</div>
+                    <div class="info-value">{{ reading.technician_name }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Employee ID</div>
+                    <div class="info-value">{{ reading.employee_id }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date</div>
+                    <div class="info-value">{{ reading.date }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Route/Zone</div>
+                    <div class="info-value">{{ reading.route_zone }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Start Time</div>
+                    <div class="info-value">{{ reading.start_time }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">End Time</div>
+                    <div class="info-value">{{ reading.end_time }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                📊 Summary Statistics
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card stat-card-blue">
+                    <div class="stat-label">Total Assigned</div>
+                    <div class="stat-value">{{ reading.total_assigned }}</div>
+                </div>
+                <div class="stat-card stat-card-green">
+                    <div class="stat-label">Meters Read</div>
+                    <div class="stat-value">{{ reading.meters_read }}</div>
+                </div>
+                <div class="stat-card stat-card-orange">
+                    <div class="stat-label">No Access</div>
+                    <div class="stat-value">{{ reading.no_access }}</div>
+                </div>
+                <div class="stat-card stat-card-red">
+                    <div class="stat-label">Faulty Meters</div>
+                    <div class="stat-value">{{ reading.faulty_meters }}</div>
+                </div>
+                <div class="stat-card stat-card-purple">
+                    <div class="stat-label">Reports Filed</div>
+                    <div class="stat-value">{{ reading.reports_filed or 'NONE' }}</div>
+                </div>
+            </div>
+        </div>
+
+        {% if reading.notes %}
+        <div class="section">
+            <div class="section-title">
+                📝 Field Notes
+            </div>
+            <div class="notes-box">{{ reading.notes }}</div>
+        </div>
+        {% endif %}
+
+        <div class="section">
+            <div class="section-title">
+                📋 Property Details ({{ reading.property_grid|length }})
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ADDRESS</th>
+                            <th>ACCOUNT HOLDER</th>
+                            <th>METER TYPE</th>
+                            <th>METER #</th>
+                            <th>PREV</th>
+                            <th>CURRENT</th>
+                            <th>UNITS</th>
+                            <th>ACCESS</th>
+                            <th>PHOTO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prop in reading.property_grid %}
+                        <tr>
+                            <td>{{ prop.address }}</td>
+                            <td>{{ prop.account_holder }}</td>
+                            <td>{{ prop.meter_type }}</td>
+                            <td>{{ prop.meter_no }}</td>
+                            <td>{{ prop.previous_reading }}</td>
+                            <td>{{ prop.current_reading }}</td>
+                            <td>{{ prop.units }}</td>
+                            <td>
+                                {% if 'ACCESSIBLE' in (prop.status or '').upper() %}
+                                <span class="status-badge status-accessible">ACCESSIBLE</span>
+                                {% elif 'DOG' in (prop.status or '').upper() %}
+                                <span class="status-badge status-dog">DOG PRESENT</span>
+                                {% elif 'NO ACCESS' in (prop.status or '').upper() %}
+                                <span class="status-badge status-no-access">No Access</span>
+                                {% else %}
+                                <span class="status-badge">{{ prop.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if prop.photo and 'yes' in (prop.photo or '').lower() %}
+                                <span class="photo-check">✓</span>
+                                {% else %}
+                                <span style="color:#6c757d;">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    
+    <div style="padding: 20px 24px; border-top: 1px solid #e9ecef; display: flex; gap: 12px; justify-content: flex-end;">
+        <button onclick="downloadPDF()" style="background:#0d6efd; color:white; padding:10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:600;">📥 Download Original PDF</button>
+        <button onclick="window.history.back()" style="background:#6c757d; color:white; padding:10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Close</button>
+    </div>
+</div>
+
+<script>
+function downloadPDF() {
+    // This would link to the original PDF file
+    alert("PDF download functionality - link to original PDF file");
+}
+</script>
+
+</body>
+</html>

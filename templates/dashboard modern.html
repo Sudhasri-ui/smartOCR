@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fa;
+}
+
+header {
+    background: #fff;
+    padding: 16px 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.nav {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.nav a {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+.nav a:hover {
+    background: #f8f9fa;
+    color: #0d6efd;
+}
+
+.container {
+    max-width: 800px;
+    margin: 80px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 16px;
+}
+
+.subtitle {
+    color: #6c757d;
+    font-size: 18px;
+    margin-bottom: 40px;
+}
+
+.upload-card {
+    background: white;
+    border-radius: 16px;
+    padding: 60px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.upload-area {
+    border: 3px dashed #dee2e6;
+    border-radius: 12px;
+    padding: 60px 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-area:hover {
+    border-color: #0d6efd;
+    background: #f8f9ff;
+}
+
+.upload-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.upload-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.upload-subtitle {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.btn-upload {
+    background: #0d6efd;
+    color: white;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-upload:hover {
+    background: #0b5ed7;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">ADC</div>
+    <div class="nav">
+        <a href="/dashboard">📤 Upload & Parse</a>
+        <a href="/reports" style="cursor:pointer;">📊 Reports</a>
+        <a href="#">👤 Admin</a>
+        <span style="color:#6c757d;">{{ current_user }}</span>
+        <a href="/logout">🚪 Logout</a>
+    </div>
+</header>
+
+<div class="container">
+    <h1>📄 Meter Reading System</h1>
+    <p class="subtitle">Upload PDF to extract and save meter reading data</p>
+
+    <div class="upload-card">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="file" class="upload-area">
+                <div class="upload-icon">📁</div>
+                <div class="upload-title">Click to upload PDF</div>
+                <div class="upload-subtitle">or drag and drop</div>
+            </label>
+            <input type="file" id="file" name="file" accept=".pdf" onchange="this.form.submit()">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
