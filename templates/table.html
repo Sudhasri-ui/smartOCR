@@ -1,25 +1,55 @@
-<html>
+﻿<html>
 <head>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body{font-family:Arial,sans-serif;padding:20px;}
+        table{width:100%;border-collapse:collapse;font-size:13px;}
+        th,td{border:1px solid #ccc;padding:8px;text-align:left;}
+        th{background:#2c3e50;color:white;}
+        tr:nth-child(even){background:#f2f2f2;}
+        .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+        .info-box{background:#eaf0fb;padding:10px;border-radius:6px;}
+        .info-box label{font-weight:bold;font-size:12px;color:#555;}
+        .info-box p{margin:4px 0 0;font-size:14px;}
+    </style>
 </head>
-
 <body>
-
-<h2>Extracted Table</h2>
-
+<h2>Extracted Meter Reading Sheet</h2>
+<div class="info-grid">
+    <div class="info-box"><label>Technician</label><p>{{ data.technician_name }}</p></div>
+    <div class="info-box"><label>Employee ID</label><p>{{ data.employee_id }}</p></div>
+    <div class="info-box"><label>Date</label><p>{{ data.date }}</p></div>
+    <div class="info-box"><label>Route/Zone</label><p>{{ data.route_zone }}</p></div>
+    <div class="info-box"><label>Start Time</label><p>{{ data.start_time }}</p></div>
+    <div class="info-box"><label>End Time</label><p>{{ data.end_time }}</p></div>
+    <div class="info-box"><label>Total Assigned</label><p>{{ data.total_assigned }}</p></div>
+    <div class="info-box"><label>Meters Read</label><p>{{ data.meters_read }}</p></div>
+    <div class="info-box"><label>No Access</label><p>{{ data.no_access }}</p></div>
+    <div class="info-box"><label>Faulty Meters</label><p>{{ data.faulty_meters }}</p></div>
+    <div class="info-box"><label>Document Type</label><p>{{ data.document_type }}</p></div>
+    <div class="info-box"><label>Notes</label><p>{{ data.notes }}</p></div>
+</div>
+<h3>Property Details</h3>
 <table>
     <tr>
-        <th>#</th>
-        <th>Description</th>
+        <th>#</th><th>Address</th><th>Account Holder</th><th>Meter Type</th>
+        <th>Meter No</th><th>Prev Reading</th><th>Current Reading</th>
+        <th>Units Used</th><th>Access Status</th><th>Photo</th>
     </tr>
-
-    {% for row in rows %}
+    {% for row in data.property_grid %}
     <tr>
-        <td>{{ row.row }}</td>
-        <td contenteditable="true">{{ row.text }}</td>
+        <td>{{ loop.index }}</td>
+        <td>{{ row.get('Address', row.get('address','')) }}</td>
+        <td>{{ row.get('Account Holder', row.get('account_holder','')) }}</td>
+        <td>{{ row.get('Meter Type', row.get('meter_type','')) }}</td>
+        <td>{{ row.get('Meter Number', row.get('meter_number', row.get('meter_no',''))) }}</td>
+        <td>{{ row.get('Prev Reading', row.get('prev_reading', row.get('previous_reading',''))) }}</td>
+        <td>{{ row.get('Current Reading', row.get('current_reading','')) }}</td>
+        <td>{{ row.get('Units Used', row.get('units_used', row.get('units',''))) }}</td>
+        <td>{{ row.get('Access Status', row.get('access_status', row.get('status',''))) }}</td>
+        <td>{{ row.get('Photo', row.get('photo','')) }}</td>
     </tr>
     {% endfor %}
 </table>
-
 </body>
 </html>

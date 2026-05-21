@@ -1,5 +1,5 @@
 import os
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,3 +20,4 @@ def extract_text_from_file(file_path: str) -> str:
     ])
 
     return response.text
+

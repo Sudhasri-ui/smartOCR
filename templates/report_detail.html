@@ -289,26 +289,26 @@ tbody td {
                     <tbody>
                         {% for prop in reading.property_grid %}
                         <tr>
-                            <td>{{ prop.address }}</td>
-                            <td>{{ prop.account_holder }}</td>
-                            <td>{{ prop.meter_type }}</td>
-                            <td>{{ prop.meter_no }}</td>
-                            <td>{{ prop.previous_reading }}</td>
-                            <td>{{ prop.current_reading }}</td>
-                            <td>{{ prop.units }}</td>
+                            <td>{{ prop.get('Address', prop.get('address','')) }}</td>
+                            <td>{{ prop.get('Account Holder', prop.get('account_holder','')) }}</td>
+                            <td>{{ prop.get('Meter Type', prop.get('meter_type','')) }}</td>
+                            <td>{{ prop.get('Meter Number', prop.get('meter_no', prop.get('meter_number',''))) }}</td>
+                            <td>{{ prop.get('Prev Reading', prop.get('previous_reading','')) }}</td>
+                            <td>{{ prop.get('Current Reading', prop.get('current_reading','')) }}</td>
+                            <td>{{ prop.get('Units Used', prop.get('units','')) }}</td>
                             <td>
-                                {% if 'ACCESSIBLE' in (prop.status or '').upper() %}
+                                {% if 'ACCESSIBLE' in (prop.get('Access Status', prop.get('status','')) or '').upper() %}
                                 <span class="status-badge status-accessible">ACCESSIBLE</span>
-                                {% elif 'DOG' in (prop.status or '').upper() %}
+                                {% elif 'DOG' in (prop.get('Access Status', prop.get('status','')) or '').upper() %}
                                 <span class="status-badge status-dog">DOG PRESENT</span>
-                                {% elif 'NO ACCESS' in (prop.status or '').upper() %}
+                                {% elif 'NO ACCESS' in (prop.get('Access Status', prop.get('status','')) or '').upper() %}
                                 <span class="status-badge status-no-access">No Access</span>
                                 {% else %}
-                                <span class="status-badge">{{ prop.status }}</span>
+                                <span class="status-badge">{{ prop.get('Access Status', prop.get('status','')) }}</span>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if prop.photo and 'yes' in (prop.photo or '').lower() %}
+                                {% if prop.get('Photo', prop.get('photo','')) and 'yes' in (prop.get('Photo', prop.get('photo',''))|string).lower() %}
                                 <span class="photo-check">✓</span>
                                 {% else %}
                                 <span style="color:#6c757d;">-</span>
@@ -338,3 +338,4 @@ function downloadPDF() {
 
 </body>
 </html>
+

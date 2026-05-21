@@ -394,3 +394,6 @@ def view_report(request: Request, reading_id: int):
 def logout(request: Request):
     request.session.clear()
     return RedirectResponse("/login")
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=8000)
