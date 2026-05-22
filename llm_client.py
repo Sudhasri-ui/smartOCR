@@ -1,4 +1,4 @@
-from google.cloud import vision
+﻿from google.cloud import vision
 from google.oauth2 import service_account
 import os
 import re
@@ -77,4 +77,5 @@ def extract_structured_data(raw_text: str):
             })
 
     return data
+
 
