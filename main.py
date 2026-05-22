@@ -1,4 +1,4 @@
-'''
+﻿'''
 from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -396,8 +396,14 @@ def logout(request: Request):
     return RedirectResponse("/login")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    import os
     import uvicorn
-    print('Server running at: http://127.0.0.1:8000')
-    uvicorn.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))
 
+    port = int(os.environ.get("PORT", 8080))
+
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=port
+    )

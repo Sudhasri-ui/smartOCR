@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 python-multipart
-google-genai
+google-generativeai
 google-cloud-vision
 python-dotenv
 starlette
@@ -11,3 +11,4 @@ pillow
 pdf2image
 opencv-python-headless
 numpy
+
