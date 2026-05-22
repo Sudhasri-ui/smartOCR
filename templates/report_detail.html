@@ -292,10 +292,10 @@ tbody td {
                             <td>{{ prop.get('Address', prop.get('address','')) }}</td>
                             <td>{{ prop.get('Account Holder', prop.get('account_holder','')) }}</td>
                             <td>{{ prop.get('Meter Type', prop.get('meter_type','')) }}</td>
-                            <td>{{ prop.get('Meter Number', prop.get('meter_no', prop.get('meter_number',''))) }}</td>
-                            <td>{{ prop.get('Prev Reading', prop.get('previous_reading','')) }}</td>
+                            <td>{{ prop.get('Meter Number', prop.get('meter_number', prop.get('meter_no',''))) }}</td>
+                            <td>{{ prop.get('Prev Reading', prop.get('prev_reading', prop.get('previous_reading',''))) }}</td>
                             <td>{{ prop.get('Current Reading', prop.get('current_reading','')) }}</td>
-                            <td>{{ prop.get('Units Used', prop.get('units','')) }}</td>
+                            <td>{{ prop.get('Units Used', prop.get('units_used', prop.get('units',''))) }}</td>
                             <td>
                                 {% if 'ACCESSIBLE' in (prop.get('Access Status', prop.get('status','')) or '').upper() %}
                                 <span class="status-badge status-accessible">ACCESSIBLE</span>
@@ -338,4 +338,6 @@ function downloadPDF() {
 
 </body>
 </html>
+
+
 

@@ -53,7 +53,6 @@ tr:hover { background: #f8f9fa; }
     </div>
 </header>
 
-<!-- FULL WIDTH PDF VIEW (Initial) -->
 <div id="fullView" class="container-full">
     <div class="pdf-card-full">
         <h3>PDF Preview</h3>
@@ -62,7 +61,6 @@ tr:hover { background: #f8f9fa; }
     </div>
 </div>
 
-<!-- SPLIT VIEW (After Parse) -->
 <div id="splitView" class="container-split hidden">
 <div class="left card">
     <h3 style="margin-bottom:12px;">PDF Preview</h3>
@@ -128,15 +126,18 @@ function showTab(tab) {
     }
 }
 
+function getVal(row, keys) {
+    for (var k of keys) { if (row[k] !== undefined && row[k] !== null && row[k] !== "") return row[k]; }
+    return "";
+}
+
 async function parseSheet() {
     const parseBtn = document.getElementById("parseBtn");
     try {
         parseBtn.disabled = true;
         parseBtn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Loading...';
-        
         const res = await fetch("/parse", { method: "POST" });
         const data = await res.json();
-        
         document.getElementById("name").value = data.technician_name || "";
         document.getElementById("emp_id").value = data.employee_id || "";
         document.getElementById("date").value = data.date || "";
@@ -149,34 +150,31 @@ async function parseSheet() {
         document.getElementById("faulty_meters").value = data.faulty_meters || "";
         document.getElementById("reports_filed").value = data.reports_filed || "";
         document.getElementById("notes").value = data.notes || "";
-        
         const tbody = document.getElementById("gridBody");
         tbody.innerHTML = "";
         if (data.property_grid && data.property_grid.length > 0) {
-            data.property_grid.forEach(row => {
+            data.property_grid.forEach(function(row) {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td contenteditable="true">${row.address || ""}</td>
-                    <td contenteditable="true">${row.account_holder || ""}</td>
-                    <td contenteditable="true">${row.meter_type || ""}</td>
-                    <td contenteditable="true">${row.meter_no || ""}</td>
-                    <td contenteditable="true">${row.previous_reading || ""}</td>
-                    <td contenteditable="true">${row.current_reading || ""}</td>
-                    <td contenteditable="true">${row.units || ""}</td>
-                    <td contenteditable="true">${row.status || ""}</td>
-                    <td contenteditable="true">${row.photo || ""}</td>
-                `;
+                const addr = getVal(row, ["Address", "address"]);
+                const holder = getVal(row, ["Account Holder", "account_holder"]);
+                const mtype = getVal(row, ["Meter Type", "meter_type"]);
+                const mno = getVal(row, ["Meter Number", "meter_no", "meter_number"]);
+                const prev = getVal(row, ["Prev Reading", "previous_reading", "prev_reading"]);
+                const curr = getVal(row, ["Current Reading", "current_reading"]);
+                const units = getVal(row, ["Units Used", "units_used", "units"]);
+                const access = getVal(row, ["Access Status", "access_status", "status"]);
+                const photo = getVal(row, ["Photo", "photo"]);
+                tr.innerHTML = "<td contenteditable='true'>" + addr + "</td><td contenteditable='true'>" + holder + "</td><td contenteditable='true'>" + mtype + "</td><td contenteditable='true'>" + mno + "</td><td contenteditable='true'>" + prev + "</td><td contenteditable='true'>" + curr + "</td><td contenteditable='true'>" + units + "</td><td contenteditable='true'>" + access + "</td><td contenteditable='true'>" + photo + "</td>";
                 tbody.appendChild(tr);
             });
             document.getElementById("rowCount").innerText = data.property_grid.length;
         }
-        
         document.getElementById("fullView").classList.add("hidden");
         document.getElementById("splitView").classList.remove("hidden");
-        alert("✓ Data extracted successfully!");
+        alert("Data extracted successfully!");
     } catch (error) {
         console.error("Error:", error);
-        parseBtn.innerHTML = "⚙ Parsing...";
+        parseBtn.innerHTML = "Parse Sheet";
         parseBtn.disabled = false;
         alert("Error extracting data");
     }
@@ -187,7 +185,7 @@ async function saveData() {
         const res = await fetch("/save", { method: "POST" });
         const result = await res.json();
         if (result.status === "success") {
-            alert("✓ Data saved to database successfully!");
+            alert("Data saved to database successfully!");
             if (confirm("View all reports?")) window.location.href = "/reports";
         } else {
             alert("Error: " + (result.error || "Failed to save"));

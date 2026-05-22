@@ -18,3 +18,7 @@ def extract_text_from_file(file_path):
             print(f'Attempt {attempt+1} failed: {e}')
             time.sleep(10)
     return 'ERROR: Failed after 3 attempts'
+
+
+
+

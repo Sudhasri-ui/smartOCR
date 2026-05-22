@@ -21,3 +21,7 @@ def structure_text(raw_text):
     d = DEFAULT.copy()
     d['notes'] = 'Failed after 3 attempts'
     return d
+
+
+
+
