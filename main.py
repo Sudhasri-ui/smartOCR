@@ -184,14 +184,11 @@ import re
 from dotenv import load_dotenv
 
 
-load_dotenv()  # 👈 THIS LINE IS CRITICAL
+load_dotenv()
 
 def safe_find(pattern, text):
     m = re.search(pattern, text, re.IGNORECASE)
     return m.group(1).strip() if m else ""
-
-# ✅ OCR + FIXED SCHEMA PARSER
-#from gemini_ocr import extract_text_with_gemini
 
 from llm_client import extract_structured_data
 
@@ -217,7 +214,7 @@ def root():
 # ---------------- LOGIN ----------------
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="login.html")
 
 @app.post("/login")
 def login_user(request: Request, email: str = Form(...), password: str = Form(...)):
@@ -226,14 +223,15 @@ def login_user(request: Request, email: str = Form(...), password: str = Form(..
         return RedirectResponse("/dashboard", status_code=303)
 
     return templates.TemplateResponse(
-        "login.html",
-        {"request": request, "error": "Invalid email or password"}
+        request=request,
+        name="login.html",
+        context={"error": "Invalid email or password"}
     )
 
 # ---------------- REGISTER ----------------
 @app.get("/register", response_class=HTMLResponse)
 def register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="register.html")
 
 @app.post("/register")
 def register_user(email: str = Form(...), password: str = Form(...)):
@@ -247,8 +245,9 @@ def dashboard(request: Request):
         return RedirectResponse("/login")
 
     return templates.TemplateResponse(
-        "dashboard.html",
-        {"request": request, "current_user": request.session["user"]}
+        request=request,
+        name="dashboard.html",
+        context={"current_user": request.session["user"]}
     )
 
 # ---------------- UPLOAD PDF ----------------
@@ -278,15 +277,15 @@ def review_page(request: Request):
         return RedirectResponse("/dashboard")
 
     return templates.TemplateResponse(
-        "review.html",
-        {
-            "request": request,
+        request=request,
+        name="review.html",
+        context={
             "pdf_url": f"/uploads/{pdf_name}",
             "current_user": request.session["user"]
         }
     )
 
-# ---------------- 🔥 PARSE SHEET (FIXED TO RETURN JSON) ----------------
+# ---------------- PARSE SHEET ----------------
 @app.post("/parse")
 def parse_file(request: Request):
     file_path = request.session.get("pdf_path")
@@ -299,33 +298,24 @@ def parse_file(request: Request):
         print("PARSE ENDPOINT CALLED")
         print(f"File path: {file_path}")
         print("="*60)
-        
-        # 1️⃣ OCR - Extract text from PDF
+
         print("Step 1: Extracting text from PDF...")
         raw_text = extract_text_from_file(file_path)
         print(f"✓ Extracted {len(raw_text)} characters")
         print(f"Text preview: {raw_text[:200]}")
-        
-        # 2️⃣ Gemini structuring - Convert to structured JSON
+
         print("\nStep 2: Structuring with Gemini...")
         structured_data = structure_text(raw_text)
         print(f"✓ Structured data created")
         print(f"Data keys: {list(structured_data.keys())}")
-        print(f"Sample values:")
-        print(f"  - technician_name: '{structured_data.get('technician_name')}'")
-        print(f"  - employee_id: '{structured_data.get('employee_id')}'")
-        print(f"  - date: '{structured_data.get('date')}'")
-        
-        # 3️⃣ Save to session for later use
+
         request.session["parsed_data"] = structured_data
-        
-        # 4️⃣ Return JSON response (NOT HTML template!)
+
         print(f"\nStep 3: Returning JSON response")
-        print(f"Full response data: {structured_data}")
         print("="*60 + "\n")
-        
+
         return JSONResponse(structured_data)
-        
+
     except Exception as e:
         print(f"❌ ERROR in /parse: {e}")
         import traceback
@@ -351,11 +341,11 @@ def save_to_database(request: Request):
     data = request.session.get("parsed_data")
     if not data:
         return JSONResponse({"error": "No parsed data"}, status_code=400)
-    
+
     try:
         reading_id = save_reading(data)
         return JSONResponse({
-            "status": "success", 
+            "status": "success",
             "message": "Data saved successfully!",
             "id": reading_id
         })
@@ -368,25 +358,27 @@ def save_to_database(request: Request):
 def reports_page(request: Request):
     if "user" not in request.session:
         return RedirectResponse("/login")
-    
+
     readings = get_all_readings()
     return templates.TemplateResponse(
-        "reports.html",
-        {"request": request, "readings": readings, "current_user": request.session["user"]}
+        request=request,
+        name="reports.html",
+        context={"readings": readings, "current_user": request.session["user"]}
     )
 
 @app.get("/report/{reading_id}", response_class=HTMLResponse)
 def view_report(request: Request, reading_id: int):
     if "user" not in request.session:
         return RedirectResponse("/login")
-    
+
     reading = get_reading_by_id(reading_id)
     if not reading:
         return RedirectResponse("/reports")
-    
+
     return templates.TemplateResponse(
-        "report_detail.html",
-        {"request": request, "reading": reading, "current_user": request.session["user"]}
+        request=request,
+        name="report_detail.html",
+        context={"reading": reading, "current_user": request.session["user"]}
     )
 
 # ---------------- LOGOUT ----------------
@@ -400,4 +392,3 @@ if __name__ == '__main__':
     import uvicorn
     print('Server running at: http://127.0.0.1:8000')
     uvicorn.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))
-
