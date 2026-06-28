@@ -4,7 +4,8 @@ An intelligent OCR (Optical Character Recognition) system powered by Google Gemi
 
 🌐 Live Demo
 
-🔗 Try SmartOCR: https://your-deployment-link.com
+🔗 Try SmartOCR: https://smartocr-production-4e55.up.railway.app
+
 
 Demo Features:
 
