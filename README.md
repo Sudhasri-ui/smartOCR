@@ -2,6 +2,18 @@
 
 An intelligent OCR (Optical Character Recognition) system powered by Google Gemini AI for extracting text from images and PDF documents.
 
+🌐 Live Demo
+
+🔗 Try SmartOCR: https://your-deployment-link.com
+
+Demo Features:
+
+- Upload image or PDF files
+- AI-powered text extraction using Google Gemini
+- View extracted text instantly
+- Store results in the database
+
+
 ## 📋 Features
 
 - **AI-Powered OCR**: Utilizes Google's Gemini AI for accurate text extraction
